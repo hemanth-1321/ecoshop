@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// schema.prisma
+model User {
+  id              String            @id @default(cuid())
+  email           String            @unique
+  password        String
+  name            String?
+  orders          Order[]
+  wishlist        Wishlist[]
+  carbonFootprint CarbonFootprint[]
+}
+
+model Product {
+  id              String            @id @default(cuid())
+  name            String
+  description     String?
+  price           Float
+  image           String?
+  orders          Order[]
+  wishlist        Wishlist[]
+  carbonFootprint CarbonFootprint[]
+  emissions       Emissions[]
+}
+
+model Order {
+  id              String            @id @default(cuid())
+  user            User              @relation(fields: [userId], references: [id])
+  userId          String
+  products        Product[]
+  total           Float
+  status          String
+  createdAt       DateTime          @default(now())
+  carbonFootprint CarbonFootprint[]
+  Payment         Payment[]
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  createdAt DateTime @default(now())
+}
+
+model CarbonFootprint {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  emissions Float
+  unit      String
+  createdAt DateTime @default(now())
+}
+
+model Emissions {
+  id        String   @id @default(cuid())
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  emissions Float
+  unit      String
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id])
+  paymentMethod String
+  amount        Float
+  status        String
+  createdAt     DateTime @default(now())
+}
