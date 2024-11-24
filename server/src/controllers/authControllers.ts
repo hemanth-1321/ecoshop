@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 const jwtSecret = process.env.JWT_SECRET;
-console.log("jwt", jwtSecret);
+// console.log("jwt", jwtSecret);
 
 if (!jwtSecret) {
   throw new Error("JWT_SECRET is not defined in the environment variables.");
@@ -94,7 +94,7 @@ export const Login = async (req: Request, res: Response): Promise<void> => {
     }
 
     const token = jwt.sign({ userId: user.id, email: user.email }, jwtSecret, {
-      expiresIn: "1h",
+      expiresIn: "365d",
     });
     res.status(200).json({
       message: "Login successful",

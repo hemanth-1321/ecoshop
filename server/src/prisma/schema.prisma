@@ -25,15 +25,35 @@ model User {
 }
 
 model Product {
-  id              String            @id @default(cuid())
-  name            String
-  description     String?
-  price           Float
-  image           String?
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  image       String?
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+
   orders          Order[]
   wishlist        Wishlist[]
   carbonFootprint CarbonFootprint[]
   emissions       Emissions[]
+}
+
+model Category {
+  id       String       @id @default(cuid())
+  name     String
+  type     CategoryType
+  products Product[]
+}
+
+enum CategoryType {
+  BEVERAGES
+  SPECIALTY_FOODS
+  SPICES_AND_SEASONINGS
+  GOURMET_GIFTS
+  SNACKS
+  BAKING_SUPPLIES
+  PANTRY_STAPLES
 }
 
 model Order {
