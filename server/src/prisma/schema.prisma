@@ -22,6 +22,8 @@ model User {
   orders          Order[]
   wishlist        Wishlist[]
   carbonFootprint CarbonFootprint[]
+
+  Review Review[]
 }
 
 model Product {
@@ -37,6 +39,27 @@ model Product {
   wishlist        Wishlist[]
   carbonFootprint CarbonFootprint[]
   emissions       Emissions[]
+
+  Review Review[]
+}
+
+model Review {
+  id             String   @id @default(cuid())
+  rating         Int?
+  content        String?
+  title          String?
+  positiveScore  Float?
+  negativeScore  Float?
+  neutralScore   Float?
+  compoundScore  Float?
+  sentimentLabel String? // Example: "Positive", "Negative", "Neutral"
+  image          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  userId         String
+  productId      String
+  user           User     @relation(fields: [userId], references: [id])
+  product        Product  @relation(fields: [productId], references: [id])
 }
 
 model Category {

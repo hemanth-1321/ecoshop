@@ -3,10 +3,11 @@ import { z } from "zod";
 import jwt from "jsonwebtoken";
 import express, { Request, Response } from "express";
 import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
+dotenv.config();
 
 const prisma = new PrismaClient();
 const jwtSecret = process.env.JWT_SECRET;
-// console.log("jwt", jwtSecret);
 
 if (!jwtSecret) {
   throw new Error("JWT_SECRET is not defined in the environment variables.");

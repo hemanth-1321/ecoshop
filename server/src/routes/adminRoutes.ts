@@ -5,3 +5,5 @@ import { adminLogin } from "../controllers/adminAuthControllers";
 const router = express.Router();
 
 router.post("/login", adminLogin);
+
+export default router;

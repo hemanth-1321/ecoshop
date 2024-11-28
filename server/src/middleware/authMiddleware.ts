@@ -14,8 +14,7 @@ export const AuthMiddleWare = async (
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    const token = authHeader?.split(" ")[1]; // Assuming token is in Bearer format
-
+    const token = authHeader?.split(" ")[1];
     if (!token) {
       res.status(401).json({ message: "Unauthorized: Token missing" });
       return;
@@ -27,7 +26,7 @@ export const AuthMiddleWare = async (
       return;
     }
 
-    const decoded = jwt.verify(token, jwtSecret) as JwtPayload; // Now jwtSecret is guaranteed to be a string
+    const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
     req.user = decoded;
     next();
   } catch (error) {

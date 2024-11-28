@@ -10,26 +10,15 @@ const s3 = new S3Client({
 });
 
 export const uploadImageToS3 = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  const { file } = req;
-
-  if (!file) {
-    res.status(400).json({
-      message: "No file provided",
-    });
-    return;
-  }
-
+  file: Express.Multer.File
+): Promise<string> => {
   const fileName = `${Date.now()}-${file.originalname}`;
   const bucketName = process.env.AWS_BUCKET_NAME || "";
 
   if (!bucketName) {
-    res.status(500).json({
-      message: "AWS_BUCKET_NAME is not defined in the environment variables",
-    });
-    return;
+    throw new Error(
+      "AWS_BUCKET_NAME is not defined in the environment variables"
+    );
   }
 
   const params = {
@@ -46,20 +35,8 @@ export const uploadImageToS3 = async (
     const cloudFrontUrl = `https://${
       process.env.CLOUDFRONT_DOMAIN || ""
     }/${fileName}`;
-
-    res.status(201).json({
-      message: "Image uploaded successfully",
-      s3Url: `https://${bucketName}.s3.${
-        process.env.AWS_REGION || ""
-      }.amazonaws.com/${fileName}`,
-      cloudFrontUrl,
-    });
-
-    console.log("CloudFront URL:", cloudFrontUrl);
+    return cloudFrontUrl;
   } catch (error: any) {
-    console.error("Error uploading image:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to upload image", error: error.message });
+    throw new Error(`Failed to upload image: ${error.message}`);
   }
 };

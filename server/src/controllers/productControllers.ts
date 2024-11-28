@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-
+import { uploadImageToS3 } from "../config/uploadImageToS3";
 const prisma = new PrismaClient();
 
 export const AddProducts = async (
@@ -8,14 +8,21 @@ export const AddProducts = async (
   res: Response
 ): Promise<void> => {
   const categoryId = req.params.categoryId;
+  const { name, price, description } = req.body;
 
-  const { name, image, price, description } = req.body;
+  const file = req.file as Express.Multer.File | undefined;
+
   try {
+    let imageUrl = "";
+
+    if (file) {
+      imageUrl = await uploadImageToS3(file);
+    }
     const product = await prisma.product.create({
       data: {
         name,
         description,
-        image,
+        image: imageUrl, // Save the uploaded image URL
         price,
         category: {
           connect: {
@@ -30,14 +37,13 @@ export const AddProducts = async (
       product,
     });
   } catch (error: any) {
-    console.error("error adding product");
+    console.error("Error adding product:", error);
     res.status(500).json({
       message: "An error occurred while adding the product",
       error: error.message,
     });
   }
 };
-
 export const EditProduct = async (
   req: Request,
   res: Response
@@ -84,6 +90,62 @@ export const DeleteProduct = async (
     console.error("Error deleteing product", error);
     res.status(500).json({
       message: "An error occured while deleting product",
+      error: error.message,
+    });
+  }
+};
+
+export const getProductByCategory = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const categoryId = req.params.categoryId;
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        categoryId,
+      },
+    });
+    if (products.length == 0) {
+      res.status(400).json({
+        message: "No products found for this category.",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Products retrieved successfully",
+      products,
+    });
+  } catch (error: any) {
+    console.error("Error fetching products by category:", error);
+    res.status(500).json({
+      message: "An error occurred while fetching products by category",
+      error: error.message,
+    });
+  }
+};
+
+export const getAllProducts = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const products = await prisma.product.findMany();
+
+    if (products.length === 0) {
+      res.status(404).json({ message: "No products found." });
+      return;
+    }
+
+    res.status(200).json({
+      message: "All products retrieved successfully",
+      products,
+    });
+  } catch (error: any) {
+    console.error("Error fetching all products:", error);
+    res.status(500).json({
+      message: "An error occurred while fetching all products",
       error: error.message,
     });
   }
