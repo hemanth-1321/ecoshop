@@ -1,21 +1,23 @@
 "use client";
-
+import LandingPage from "@/LandingPageComponent/LandingPage";
 import Appbar from "@/components/Appbar";
 import PromoBanner from "@/components/Banner";
-import HeroSection from "@/components/Hero";
+import Hero from "@/components/Hero";
+
+import CategoryCarousel from "@/components/carousel";
 import { useRouter } from "next/navigation";
+
 export default function Home() {
   const router = useRouter();
-  const handleGetStarted = () => {
-    router.push("/auth/register");
-  };
 
   return (
-    <div className="hero bg-base-200 min-h-screen">
-      <Appbar />
+    <div>
+      <LandingPage />
+      {/* <Appbar />
+
       <HeroSection />
-      <PromoBanner />
-      <div>hello</div>
+
+      <CategoryCarousel /> */}
     </div>
   );
 }

@@ -2,7 +2,7 @@ import React from "react";
 
 const PromoBanner = () => {
   return (
-    <div className="bg-[#fff] text-center py-3 px-4">
+    <div className="sm:hidden bg-[#fff] text-center py-3 px-4">
       <div className="flex items-center justify-center space-x-1 text-sm">
         <span role="img" aria-label="gift" className="text-lg">
           🎁
