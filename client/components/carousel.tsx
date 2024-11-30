@@ -1,88 +1,48 @@
-import React, { useRef, useState } from "react";
-import {
-  Smartphone,
-  Tablet,
-  Watch,
-  Headphones,
-  Target,
-  Tv,
-  Speaker,
-  Laptop,
-  Camera,
-  Gamepad,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import axiosInstance from "@/lib/axiosInstance";
+import Link from "next/link";
 
-const category = [
-  {
-    title: "iPhone",
-    price: "$999",
-    icon: Smartphone,
-    description: "Latest iPhone with amazing camera and performance",
-  },
-  {
-    title: "iPad",
-    price: "$799",
-    icon: Tablet,
-    description: "Powerful tablet for work and creativity",
-  },
-  {
-    title: "Apple Watch",
-    price: "$399",
-    icon: Watch,
-    description: "Stay connected and track your fitness",
-  },
-  {
-    title: "AirPods",
-    price: "$249",
-    icon: Headphones,
-    description: "Immersive audio experience",
-  },
-  {
-    title: "AirTag",
-    price: "$29",
-    icon: Target,
-    description: "Never lose your important items",
-  },
-  {
-    title: "Apple TV 4K",
-    price: "$179",
-    icon: Tv,
-    description: "Premium entertainment hub",
-  },
-  {
-    title: "HomePod",
-    price: "$299",
-    icon: Speaker,
-    description: "Room-filling sound with Siri",
-  },
-  {
-    title: "MacBook",
-    price: "$1299",
-    icon: Laptop,
-    description: "Powerful laptop for professionals",
-  },
-  {
-    title: "iSight Camera",
-    price: "$199",
-    icon: Camera,
-    description: "High-quality video conferencing",
-  },
-  {
-    title: "Apple Arcade",
-    price: "$4.99/mo",
-    icon: Gamepad,
-    description: "Premium gaming experience",
-  },
-];
+interface Category {
+  id: string;
+  name: string;
+  image: string; // Assuming this is a URL string for the category image
+}
 
 const CategoryCarousel = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [scrollDirection, setScrollDirection] = useState<
     "left" | "right" | null
   >(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosInstance.get<Category[]>(
+          "/category/categories"
+        );
+        setCategories(response.data);
+        setLoading(false);
+      } catch (error: any) {
+        console.error("Error fetching categories:", error);
+        setError("Failed to load categories.");
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   const scrollLeft = () => {
     if (carouselRef.current) {
@@ -108,40 +68,50 @@ const CategoryCarousel = () => {
 
   return (
     <div
-      className="px-4 py-8 relative bg-gradient-to-r from-gray-100 to-green-50 backdrop-blur-md "
+      className="px-4 py-8 relative bg-gradient-to-r from-gray-100 to-green-50 backdrop-blur-md"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      {/* Carousel */}
       <div
         className="flex items-center space-x-6 overflow-x-auto"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         ref={carouselRef}
       >
-        {category.map(({ title, price, icon: IconComponent, description }) => (
-          <div
-            key={title}
-            className="min-w-[280px] p-6 bg-white rounded-xl shadow-lg flex flex-col items-center space-y-4 select-none"
+        {categories.map(({ id, name, image }) => (
+          <Link
+            key={id}
+            href={`/categories/${encodeURIComponent(name)}`}
+            passHref
           >
-            <div className="p-4 bg-gray-50 rounded-full">
-              <IconComponent size={32} className="text-gray-800" />
+            <div
+              key={id}
+              className="min-w-[280px] p-6 bg-white rounded-xl shadow-xl flex flex-col items-center space-y-4 select-none"
+            >
+              <div className="p-4 bg-gray-50 rounded-full">
+                <img
+                  src={image}
+                  alt={name}
+                  className="w-[140] h-[140] object-cover rounded-full"
+                />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800">{name}</h3>
             </div>
-            <h3 className="text-xl font-semibold text-gray-800">{title}</h3>
-            <p className="text-2xl font-bold text-gray-900">{price}</p>
-            <p className="text-gray-600 text-center text-sm">{description}</p>
-          </div>
+          </Link>
         ))}
       </div>
 
       {/* Left arrow */}
       {isHovered && scrollDirection !== "left" && (
         <div
-          className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-white text-gray-800 p-2 rounded-full shadow-md cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-300"
+          className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-400 text-gray-800 p-2 rounded-full shadow-md cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-300"
           onClick={scrollLeft}
         >
           <ChevronLeft size={24} />
         </div>
       )}
 
+      {/* Right arrow */}
       {isHovered && scrollDirection !== "right" && (
         <div
           className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-white text-gray-800 p-2 rounded-full shadow-md cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-300"

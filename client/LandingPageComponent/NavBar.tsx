@@ -1,10 +1,17 @@
+"use client";
+
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
 
+  const hanndleGetStartedClick = () => {
+    router.push("/auth/login");
+  };
   return (
-    <div className="bg-gradient-to-b from-green-100 to-gray-50 shadow-md fixed w-full top-0 left-0 z-50">
+    <div className="shadow-md fixed w-full top-0 left-0 z-50 backdrop-blur-md bg-opacity-70">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* Left side: Logo/Brand Name */}
         <div className="text-xl font-bold text-gray-700">Elevé</div>
@@ -49,7 +56,10 @@ const NavBar = () => {
 
         {/* Right side: SignIn Button */}
         <div>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300">
+          <button
+            className="px-4 py-2 bg-blue-600 text-gray-800 rounded-full hover:bg-blue-700 transition duration-300"
+            onClick={hanndleGetStartedClick}
+          >
             Get Started
           </button>
         </div>
@@ -80,7 +90,7 @@ const NavBar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-gray-100 py-3 space-y-3 text-center">
+        <div className="md:hidden bg-gray-100 py-3 space-y-3 text-center backdrop-blur-md bg-opacity-30">
           <ul>
             <li>
               <a

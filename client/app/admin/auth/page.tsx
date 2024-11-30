@@ -10,7 +10,7 @@ interface RegisterFormData {
   password: string;
 }
 
-const RegisterForm = () => {
+const LoginForm = () => {
   const [formData, setFormData] = useState<RegisterFormData>({
     name: "",
     email: "",
@@ -32,7 +32,7 @@ const RegisterForm = () => {
   };
 
   const validateForm = () => {
-    if (!formData.name || !formData.email || !formData.password) {
+    if (!formData.email || !formData.password) {
       setError("All fields are required.");
       return false;
     }
@@ -45,12 +45,15 @@ const RegisterForm = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axiosInstance.post("/auth/register", formData);
+      const response = await axiosInstance.post("/admin/login", formData);
       console.log(response.data);
       if (response.status === 201) {
+        const token = response.data.token;
+        localStorage.setItem("token", token);
         setError(null);
         console.log("Redirecting to /auth/login...");
-        router.push("/auth/login");
+
+        router.push("/admin/dashboard");
       }
     } catch (error: any) {
       const errorMessage =
@@ -65,30 +68,13 @@ const RegisterForm = () => {
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="bg-white p-10 rounded-md shadow-md w-80">
-        <h2 className="text-lg font-bold mb-4">Register</h2>
+        <h2 className="text-lg font-bold mb-4">Login</h2>
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
           </div>
         )}
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="name"
-            >
-              Name
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="name"
-              name="name"
-              type="text"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -130,7 +116,7 @@ const RegisterForm = () => {
             type="submit"
             disabled={loading}
           >
-            {loading ? "Registering..." : "Register"}
+            {loading ? "Loggingin..." : "Login"}
           </button>
         </form>
       </div>
@@ -138,4 +124,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default LoginForm;

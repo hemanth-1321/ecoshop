@@ -5,4 +5,5 @@ const router = express.Router();
 
 router.get("/categories", AuthMiddleWare, Categories);
 
+
 export default router;

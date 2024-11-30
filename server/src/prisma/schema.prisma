@@ -64,7 +64,8 @@ model Review {
 
 model Category {
   id       String       @id @default(cuid())
-  name     String
+  name     String       @unique
+  image    String?
   type     CategoryType
   products Product[]
 }
@@ -77,6 +78,7 @@ enum CategoryType {
   SNACKS
   BAKING_SUPPLIES
   PANTRY_STAPLES
+  DAIRY_AND_PATISSERIE
 }
 
 model Order {

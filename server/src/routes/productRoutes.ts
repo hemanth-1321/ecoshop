@@ -15,7 +15,7 @@ router.post("/addItem/:categoryId", verifyAdmin, upload, AddProducts);
 router.put("/edit/:productId", verifyAdmin, EditProduct);
 router.delete("/delete/:productId", verifyAdmin, DeleteProduct);
 
-router.get("/category/:categoryId", AuthMiddleWare, getProductByCategory);
+router.get("/category/:name", AuthMiddleWare, getProductByCategory);
 router.get("/all", getAllProducts);
 
 export default router;
