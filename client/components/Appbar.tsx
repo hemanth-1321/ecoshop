@@ -3,20 +3,6 @@ import Link from "next/link";
 import { Search, ShoppingBag } from "lucide-react";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 
-const navItems = [
-  { name: "Store", href: "/store" },
-  { name: "Mac", href: "/mac" },
-  { name: "iPad", href: "/ipad" },
-  { name: "iPhone", href: "/iphone" },
-  { name: "Watch", href: "/watch" },
-  { name: "Vision", href: "/vision" },
-  { name: "AirPods", href: "/airpods" },
-  { name: "TV & Home", href: "/tv-home" },
-  { name: "Entertainment", href: "/entertainment" },
-  { name: "Accessories", href: "/accessories" },
-  { name: "Support", href: "/support" },
-];
-
 const Appbar: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -31,17 +17,6 @@ const Appbar: React.FC = () => {
           {/* Left Section */}
           <div className="flex items-center space-x-20">
             <span className="font-extrabold">Elevé</span>
-            <div className="hidden md:flex space-x-4">
-              {navItems.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="text-sm text-[#1d1d1f] hover:text-gray-500"
-                >
-                  {item.name}
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Right Section */}
@@ -49,24 +24,9 @@ const Appbar: React.FC = () => {
             <Link href={"/search"}>
               <Search className="h-4 w-4 text-[#1d1d1f] cursor-pointer" />
             </Link>
-            <Link href={"/cart"}>
+            <Link href={"/checkoutPage/checkout"}>
               <ShoppingBag className="h-4 w-4 text-[#1d1d1f] cursor-pointer" />
             </Link>
-
-            {/* Hamburger Menu for Mobile */}
-            <div className="md:hidden">
-              {isMenuOpen ? (
-                <HiOutlineX
-                  className="h-6 w-6 text-[#1d1d1f] cursor-pointer"
-                  onClick={toggleMenu}
-                />
-              ) : (
-                <HiOutlineMenu
-                  className="h-6 w-6 text-[#1d1d1f] cursor-pointer"
-                  onClick={toggleMenu}
-                />
-              )}
-            </div>
           </div>
         </div>
       </div>
@@ -78,19 +38,7 @@ const Appbar: React.FC = () => {
             ? "opacity-100 transform scale-y-100 max-h-screen"
             : "opacity-0 transform scale-y-0 max-h-0 overflow-hidden"
         }`}
-      >
-        <div className="flex flex-col space-y-2 py-4 px-6">
-          {navItems.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              className="text-sm text-[#1d1d1f] hover:text-gray-500"
-            >
-              {item.name}
-            </a>
-          ))}
-        </div>
-      </div>
+      ></div>
     </nav>
   );
 };

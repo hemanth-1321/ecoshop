@@ -5,6 +5,7 @@ import {
   EditProduct,
   getAllProducts,
   getProductByCategory,
+  getProductById,
 } from "../controllers/productControllers";
 import { verifyAdmin } from "../controllers/adminAuthControllers";
 import { upload } from "./multer";
@@ -16,6 +17,8 @@ router.put("/edit/:productId", verifyAdmin, EditProduct);
 router.delete("/delete/:productId", verifyAdmin, DeleteProduct);
 
 router.get("/category/:name", AuthMiddleWare, getProductByCategory);
-router.get("/all", getAllProducts);
+router.get("/:id", AuthMiddleWare, getProductById);
+
+router.get("/allprodcuts", AuthMiddleWare, getAllProducts);
 
 export default router;

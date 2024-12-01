@@ -5,14 +5,12 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface RegisterFormData {
-  name: string;
   email: string;
   password: string;
 }
 
 const LoginForm = () => {
   const [formData, setFormData] = useState<RegisterFormData>({
-    name: "",
     email: "",
     password: "",
   });
@@ -26,6 +24,7 @@ const LoginForm = () => {
   }, []);
 
   if (!isMounted) return null;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
@@ -47,18 +46,17 @@ const LoginForm = () => {
     try {
       const response = await axiosInstance.post("/auth/login", formData);
       console.log(response.data);
-      if (response.status === 201) {
-        const token = response.data.token;
-        localStorage.setItem("token", token);
-        setError(null);
-        console.log("Redirecting to /auth/login...");
 
-        router.push("/");
+      if (response.status === 201) {
+        const { token, userId } = response.data; // Assuming response contains userId
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", userId); // Set the userId in localStorage
+        setError(null);
+        router.push("/"); // Redirect to homepage after login
       }
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message ||
-        "Registration failed. Please try again.";
+        error.response?.data?.message || "Login failed. Please try again.";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -66,9 +64,12 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="bg-white p-10 rounded-md shadow-md w-80">
-        <h2 className="text-lg font-bold mb-4">Login</h2>
+    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">
+          Welcome Back!
+        </h2>
+        <p className="text-gray-600 text-center mb-6">Login to continue</p>
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
@@ -83,7 +84,7 @@ const LoginForm = () => {
               Email
             </label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-300"
               id="email"
               name="email"
               type="email"
@@ -92,7 +93,7 @@ const LoginForm = () => {
               required
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-6">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="password"
@@ -100,7 +101,7 @@ const LoginForm = () => {
               Password
             </label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-300"
               id="password"
               name="password"
               type="password"
@@ -110,15 +111,26 @@ const LoginForm = () => {
             />
           </div>
           <button
-            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
+            className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-purple-500 hover:to-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
               loading ? "cursor-not-allowed opacity-50" : ""
             }`}
             type="submit"
             disabled={loading}
           >
-            {loading ? "Loggingin..." : "Login"}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+        <div className="text-center mt-4">
+          <p className="text-gray-600">
+            Don’t have an account?{" "}
+            <a
+              href="/auth/register"
+              className="text-blue-500 hover:text-blue-700 font-bold"
+            >
+              Sign Up
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -84,10 +84,7 @@ const CategoryCarousel = () => {
             href={`/categories/${encodeURIComponent(name)}`}
             passHref
           >
-            <div
-              key={id}
-              className="min-w-[280px] p-6 bg-white rounded-xl shadow-xl flex flex-col items-center space-y-4 select-none"
-            >
+            <div className="min-w-[280px] p-6 bg-white rounded-xl shadow-xl flex flex-col items-center space-y-4 select-none">
               <div className="p-4 bg-gray-50 rounded-full">
                 <img
                   src={image}

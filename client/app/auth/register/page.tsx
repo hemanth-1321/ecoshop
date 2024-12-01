@@ -26,6 +26,7 @@ const RegisterForm = () => {
   }, []);
 
   if (!isMounted) return null;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
@@ -46,10 +47,8 @@ const RegisterForm = () => {
     setError(null);
     try {
       const response = await axiosInstance.post("/auth/register", formData);
-      console.log(response.data);
       if (response.status === 201) {
         setError(null);
-        console.log("Redirecting to /auth/login...");
         router.push("/auth/login");
       }
     } catch (error: any) {
@@ -63,9 +62,14 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="bg-white p-10 rounded-md shadow-md w-80">
-        <h2 className="text-lg font-bold mb-4">Register</h2>
+    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h1 className="text-2xl font-bold text-gray-800 text-center mb-4">
+          Welcome to <span className="text-blue-500">Elevé</span>
+        </h1>
+        <p className="text-gray-600 text-center mb-6">
+          Create your account to get started!
+        </p>
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
@@ -80,7 +84,7 @@ const RegisterForm = () => {
               Name
             </label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-300"
               id="name"
               name="name"
               type="text"
@@ -97,7 +101,7 @@ const RegisterForm = () => {
               Email
             </label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-300"
               id="email"
               name="email"
               type="email"
@@ -114,7 +118,7 @@ const RegisterForm = () => {
               Password
             </label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-300"
               id="password"
               name="password"
               type="password"
@@ -124,7 +128,7 @@ const RegisterForm = () => {
             />
           </div>
           <button
-            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
+            className={`w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-purple-500 hover:to-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
               loading ? "cursor-not-allowed opacity-50" : ""
             }`}
             type="submit"
@@ -132,6 +136,15 @@ const RegisterForm = () => {
           >
             {loading ? "Registering..." : "Register"}
           </button>
+          <p className="text-center mt-4 text-gray-600">
+            Already have an account?{" "}
+            <a
+              href="/auth/login"
+              className="text-blue-500 font-bold hover:underline"
+            >
+              Login
+            </a>
+          </p>
         </form>
       </div>
     </div>

@@ -165,3 +165,43 @@ export const getAllProducts = async (
     });
   }
 };
+
+export const getProductById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params; // Get product ID from the URL parameter
+  console.log(id);
+  try {
+    // Fetch the product by its ID from the database
+    const product = await prisma.product.findUnique({
+      where: {
+        id: id, // Find the product by its ID
+      },
+      include: {
+        category: true, // Include related category data
+        orders: true, // Include related orders data
+        wishlist: true, // Include related wishlist data
+        carbonFootprint: true, // Include related carbon footprint data
+        emissions: true, // Include related emissions data
+        Review: true, // Include related reviews
+      },
+    });
+
+    if (!product) {
+      res.status(404).json({ message: `Product with ID ${id} not found.` });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Product retrieved successfully",
+      product,
+    });
+  } catch (error: any) {
+    console.error("Error fetching product by ID:", error);
+    res.status(500).json({
+      message: "An error occurred while fetching the product",
+      error: error.message,
+    });
+  }
+};

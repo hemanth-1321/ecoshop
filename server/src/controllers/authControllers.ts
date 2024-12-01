@@ -101,6 +101,8 @@ export const Login = async (req: Request, res: Response): Promise<void> => {
     res.status(201).json({
       message: "Login successful",
       token,
+      userId: user.id,
+      email: user.email,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
