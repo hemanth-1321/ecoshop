@@ -1,36 +1,23 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import LandingPage from "@/LandingPageComponent/LandingPage";
 import Appbar from "@/components/Appbar";
+import PromoBanner from "@/components/Banner";
 import Hero from "@/components/Hero";
+
 import CategoryCarousel from "@/components/carousel";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const [hasToken, setHasToken] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setHasToken(true); // User is authenticated
-    } else {
-      setHasToken(false); // User is not authenticated
-    }
-  }, []);
-
-  if (!hasToken) {
-    // Optionally, redirect unauthenticated users
-    return <LandingPage />;
-  }
-
-  // Render authenticated layout
   return (
     <div>
-      <Appbar />
-      <Hero />
-      <CategoryCarousel />
+      <LandingPage />
+      {/* <Appbar />
+
+      <HeroSection />
+
+      <CategoryCarousel /> */}
     </div>
   );
 }

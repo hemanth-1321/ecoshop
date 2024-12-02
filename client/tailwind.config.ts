@@ -8,7 +8,10 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {},
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+      },
       animation: {
         marquee: "marquee 10s linear infinite", // Add custom animation for marquee
       },

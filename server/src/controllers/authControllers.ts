@@ -49,7 +49,6 @@ export const Register = async (req: Request, res: Response): Promise<void> => {
       message: "User created successfully",
       newUser,
     });
-    console.log(newUser);
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({
@@ -98,7 +97,7 @@ export const Login = async (req: Request, res: Response): Promise<void> => {
     const token = jwt.sign({ userId: user.id, email: user.email }, jwtSecret, {
       expiresIn: "365d",
     });
-    res.status(201).json({
+    res.status(200).json({
       message: "Login successful",
       token,
     });
